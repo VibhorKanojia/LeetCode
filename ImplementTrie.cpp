@@ -1,75 +1,56 @@
 struct TrieNode{
     bool isLeaf;
-    TrieNode * children[26];
-    TrieNode(){
-        isLeaf = 0;
-        for (int i = 0 ; i < 26 ; i++){
-            children[i] = NULL;
-        }
+    char val;
+    vector<TrieNode *> children;
+    TrieNode(char val){
+        isLeaf = false;
+        this->val = val;
+        children.resize(26);
     }
 };
 
 class Trie {
+private:
+    TrieNode * root;    
 public:
-    TrieNode * root;
     /** Initialize your data structure here. */
     Trie() {
-        root = new TrieNode();
+        root = new TrieNode('#');
     }
     
     /** Inserts a word into the trie. */
     void insert(string word) {
-        int size = word.size();
-        struct TrieNode * tempNode = root;
-        for (int i = 0 ; i < size ; i++){
+        TrieNode * node = root;
+        for (int i =0 ; i < word.size(); i++){
             char c = word[i];
-            if (tempNode->children[c-97] == NULL){
-                struct TrieNode * newNode = new TrieNode();
-                tempNode->children[c-97] = newNode;
-                tempNode = tempNode->children[c-97];    
+            if ((node->children)[c-'a'] == NULL){
+                (node->children)[c-'a'] = new TrieNode(c);
             }
-            else{
-                tempNode = tempNode->children[c-97];    
-            }
-            if (i == size -1){
-                tempNode->isLeaf = 1;
-            }
+            node = (node->children)[c-'a'];
         }
+        node->isLeaf = true;
     }
     
     /** Returns if the word is in the trie. */
     bool search(string word) {
-        int size = word.size();
-        struct TrieNode * tempNode = root;
-        for (int i = 0 ; i < size ; i++){
+        TrieNode * node = root;
+        for (int i =0 ; i < word.size(); i++){
             char c = word[i];
-            
-            if (tempNode->children[c-97] == NULL){
-                return 0;
-            }
-            else{
-                tempNode = tempNode->children[c-97];
-            }
+            if ((node->children)[c-'a'] == NULL) return false;
+            node = (node->children)[c-'a'];
         }
-        
-        if (tempNode->isLeaf == 1) return 1;
-        else return 0;
+        return (node->isLeaf);
     }
     
     /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
-        int size = prefix.size();
-        struct TrieNode * tempNode = root;
-        for (int i = 0 ; i < size ; i++){
+        TrieNode * node = root;
+        for (int i =0 ; i < prefix.size(); i++){
             char c = prefix[i];
-            if (tempNode->children[c-97] == NULL){
-                return 0;
-            }
-            else{
-                tempNode = tempNode->children[c-97];
-            }
+            if ((node->children)[c-'a'] == NULL) return false;
+            node = (node->children)[c-'a'];
         }
-        return 1;
+        return true;
     }
 };
 
